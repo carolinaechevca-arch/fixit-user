@@ -1,9 +1,13 @@
 package com.fixit.user.infraestructure.adapters.driving.rest.mapper;
 
 import com.fixit.user.domain.model.Technician;
+import com.fixit.user.domain.model.TechnicianUpdate;
+import com.fixit.user.domain.model.TechnicianWorkload;
 import com.fixit.user.domain.model.User;
+import com.fixit.user.infraestructure.adapters.driving.rest.dto.request.TechnicianUpdatePutRequest;
 import com.fixit.user.infraestructure.adapters.driving.rest.dto.request.UserRequest;
-import com.fixit.user.infraestructure.adapters.driving.rest.dto.response.user.TechnicianResponse;
+import com.fixit.user.infraestructure.adapters.driving.rest.dto.response.technician.TechnicianResponse;
+import com.fixit.user.infraestructure.adapters.driving.rest.dto.response.technician.TechnicianWorkloadResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -47,5 +51,11 @@ public interface IUserRestMapper {
                 .map(this::toTechnicianResponse)
                 .toList();
     }
+    @Mapping(target = "status", source = "technician.status")
+    @Mapping(target = "availablePoints", source = "availablePoints")
+    @Mapping(target = "assignedTasks", source = "activeAssignments")
+    TechnicianWorkloadResponse toWorkloadResponse(TechnicianWorkload workload);
+
+    TechnicianUpdate toTechnicianUpdate(TechnicianUpdatePutRequest request);
 
 }

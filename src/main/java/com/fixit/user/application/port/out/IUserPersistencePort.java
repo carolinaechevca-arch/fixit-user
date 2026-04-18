@@ -1,5 +1,6 @@
 package com.fixit.user.application.port.out;
 
+import com.fixit.user.domain.enums.TechnicianCategory;
 import com.fixit.user.domain.model.Technician;
 import com.fixit.user.domain.model.User;
 
@@ -15,4 +16,8 @@ public interface IUserPersistencePort {
     User findByEmail(String email);
 
     List<Technician> findAllTechnicians();
+
+    List<Technician> findTechniciansByCategory(TechnicianCategory category);
+    Technician findById(Long id);
+    Technician updateTechnician (Technician technician);
 }

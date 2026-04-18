@@ -3,7 +3,11 @@ package com.fixit.user.domain.service;
 import com.fixit.user.domain.enums.Role;
 import com.fixit.user.domain.enums.TechnicianStatus;
 import com.fixit.user.domain.exceptions.TechnicianAlreadyExistsException;
+import com.fixit.user.domain.exceptions.TechnicianNotFoundException;
 import com.fixit.user.domain.model.Technician;
+import com.fixit.user.domain.util.constants.DomainConstants;
+
+import java.util.Optional;
 
 public class TechnicianDomainService {
 
@@ -27,4 +31,12 @@ public class TechnicianDomainService {
             throw new TechnicianAlreadyExistsException("DNI already in use");
         }
     }
+    public Technician validateTechnicianExists(Technician technicianOptional, Long id) {
+        return Optional.ofNullable(technicianOptional).orElseThrow(() ->
+                new TechnicianNotFoundException(
+                        String.format(DomainConstants.TECHNICIAN_NOT_FOUND_MESSAGE, id)
+                )
+        );
+    }
+
 }
