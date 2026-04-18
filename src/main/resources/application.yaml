@@ -4,7 +4,8 @@ server:
 external:
   services:
     fixit-tasks-service:
-      url: ${USER_SERVICE_URL:http://localhost:8090}
+      url: http://localhost:8090
+
 spring:
   application:
     name: fixit-user

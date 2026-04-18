@@ -33,6 +33,7 @@ public class AuthUseCase implements IAuthServicePort {
         }
 
         if (!passwordEncoder.matches(auth.password(), user.getPassword())) {
+            log.warn("[USE-CASE] Invalid password for user: {}", auth.email());
             throw new InvalidCredentialsException(INVALID_CREDENTIALS_EXCEPTION_MESSAGE);
         }
 

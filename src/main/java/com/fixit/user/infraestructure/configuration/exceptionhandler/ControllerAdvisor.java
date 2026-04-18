@@ -65,14 +65,6 @@ public class ControllerAdvisor {
                 HttpStatus.BAD_REQUEST.value()));
     }
 
-    @ExceptionHandler(NoMasterTechniciansAvailableException.class)
-    public ResponseEntity<ExceptionResponse> handleNoMasterTechniciansAvailableException(
-            NoMasterTechniciansAvailableException exception) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(
-                exception.getMessage(), HttpStatus.CONFLICT.getReasonPhrase(), LocalDateTime.now(),
-                HttpStatus.CONFLICT.value()));
-    }
-
     @ExceptionHandler(TaskNotUrgentException.class)
     public ResponseEntity<ExceptionResponse> handleTaskNotUrgentException(TaskNotUrgentException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(

@@ -6,12 +6,15 @@ import com.fixit.user.domain.enums.TechnicianStatus;
 import com.fixit.user.domain.exceptions.*;
 import com.fixit.user.domain.model.Technician;
 import com.fixit.user.domain.util.constants.DomainConstants;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
+@Slf4j
 public class TechnicianDomainService {
 
     public Technician prepareTechnicianForRegistration(Technician technician, String encodedPassword) {
+       log.info( "Preparing technician {} for registration with email {}", technician.getUser().getName(), technician.getUser().getEmail());
         return technician.toBuilder()
                 .user(technician.getUser().toBuilder()
                         .password(encodedPassword)
