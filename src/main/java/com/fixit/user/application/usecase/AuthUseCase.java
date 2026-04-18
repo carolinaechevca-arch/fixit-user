@@ -3,7 +3,7 @@ package com.fixit.user.application.usecase;
 import com.fixit.user.application.port.in.IAuthServicePort;
 import com.fixit.user.application.port.out.IJwtPersistencePort;
 import com.fixit.user.application.port.out.IPasswordEncoderPersistencePort;
-import com.fixit.user.application.port.out.IUserPersistencePort;
+import com.fixit.user.application.port.out.ITechnicianPersistencePort;
 import com.fixit.user.domain.exceptions.InvalidCredentialsException;
 import com.fixit.user.domain.model.AuthResponseModel;
 import com.fixit.user.domain.model.AuthenticationModel;
@@ -18,7 +18,7 @@ import static com.fixit.user.domain.util.constants.AuthConstants.INVALID_CREDENT
 public class AuthUseCase implements IAuthServicePort {
 
 
-    private final IUserPersistencePort userPersistencePort;
+    private final ITechnicianPersistencePort userPersistencePort;
     private final IPasswordEncoderPersistencePort passwordEncoder;
     private final IJwtPersistencePort jwtPort;
 
@@ -33,14 +33,13 @@ public class AuthUseCase implements IAuthServicePort {
         }
 
         if (!passwordEncoder.matches(auth.password(), user.getPassword())) {
-            log.warn("[USE-CASE] Invalid password for user: {}", auth.email());
             throw new InvalidCredentialsException(INVALID_CREDENTIALS_EXCEPTION_MESSAGE);
         }
 
 
         String accessToken = jwtPort.generateAccessToken(user.getEmail(), user.getId(), user.getRole().name());
 
-        log.info("[USE-CASE] User authenticated successfully: {}. Roles embedded in token.", auth.email());
+        log.info("[USE-CASE] User authenticated successfully: {}", auth.email());
 
         return new AuthResponseModel(
                 accessToken,

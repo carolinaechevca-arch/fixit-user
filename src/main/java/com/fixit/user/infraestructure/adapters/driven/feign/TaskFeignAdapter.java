@@ -16,6 +16,7 @@ public class TaskFeignAdapter implements ITaskFeignClientPort {
 
     @Override
     public List<Task> findByTechnicianId(Long technicianId) {
-        return List.of();
+
+        return  feignMapper.toDomainList(technicianFeignClient.findByTechnicianId(technicianId));
     }
 }

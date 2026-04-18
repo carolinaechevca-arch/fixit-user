@@ -1,6 +1,6 @@
 package com.fixit.user.infraestructure.adapters.driving.rest.controller;
 
-import com.fixit.user.application.port.in.IUserServicePort;
+import com.fixit.user.application.port.in.ITechnicianServicePort;
 import com.fixit.user.domain.enums.TechnicianCategory;
 import com.fixit.user.domain.model.Technician;
 import com.fixit.user.domain.model.TechnicianUpdate;
@@ -27,7 +27,7 @@ import java.util.List;
 @Tag(name = "User Management", description = "Endpoints for registering and managing users")
 public class TechnicianController {
 
-    private final IUserServicePort userServicePort;
+    private final ITechnicianServicePort userServicePort;
     private final IUserRestMapper userRestMapper;
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -84,7 +84,7 @@ public class TechnicianController {
     }
 
     @GetMapping("/{id}/workload")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TECHNICIAN')") // Permite acceso a ADMIN y TECHNICIAN
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TECHNICIAN')")
     @Operation(summary = "Get technician workload and capacity")
     public ResponseEntity<TechnicianWorkloadResponse> getTechnicianWorkload(@PathVariable Long id) {
         TechnicianWorkload workload = userServicePort.getTechnicianWorkload(id);
@@ -92,4 +92,22 @@ public class TechnicianController {
 
     }
 
+    @PutMapping("/{id}/category")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<TechnicianResponse> updateTechnicianCategory(@PathVariable Long id,
+                                                                       @Valid
+                                                                       @RequestParam TechnicianCategory newTechnicianCategory) {
+        return ResponseEntity.ok(
+                userRestMapper.toTechnicianResponse(
+                        userServicePort.updateTechnicianCategory(id, newTechnicianCategory)
+                )
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteTechnician(@PathVariable Long id) {
+        userServicePort.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

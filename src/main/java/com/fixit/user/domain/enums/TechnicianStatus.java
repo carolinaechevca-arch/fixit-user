@@ -5,7 +5,4 @@ public enum TechnicianStatus {
     BUSY,
     NOT_AVAILABLE;
 
-    public boolean isAvailable() {
-        return this == AVAILABLE;
-    }
 }

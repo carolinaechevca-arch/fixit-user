@@ -2,16 +2,13 @@ package com.fixit.user.infraestructure.configuration.bean;
 
 import com.fixit.user.application.port.in.IAuthServicePort;
 import com.fixit.user.application.port.in.ITechnicianServicePort;
-import com.fixit.user.application.port.in.IUserServicePort;
-import com.fixit.user.application.port.out.IJwtPersistencePort;
-import com.fixit.user.application.port.out.IPasswordEncoderPersistencePort;
-import com.fixit.user.application.port.out.ITechnicianPersistencePort;
-import com.fixit.user.application.port.out.IUserPersistencePort;
+import com.fixit.user.application.port.out.*;
 import com.fixit.user.application.usecase.AuthUseCase;
 import com.fixit.user.application.usecase.TechnicianUseCase;
-import com.fixit.user.application.usecase.UserUseCase;
 import com.fixit.user.domain.service.TechnicianDomainService;
-import com.fixit.user.infraestructure.adapters.driven.jpa.adapter.TechnicianJpaAdapter;
+import com.fixit.user.infraestructure.adapters.driven.feign.TaskFeignAdapter;
+import com.fixit.user.infraestructure.adapters.driven.feign.clients.ITaskFeignClient;
+import com.fixit.user.infraestructure.adapters.driven.feign.mapper.ITaskFeignMapper;
 import com.fixit.user.infraestructure.adapters.driven.security.adapter.PasswordEncoderAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,11 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class BeanConfiguration {
 
-    @Bean
-    public ITechnicianPersistencePort technicianPersistencePort(
-    ) {
-        return new TechnicianJpaAdapter();
-    }
+
 
     @Bean
     public TechnicianDomainService technicianDomainService() {
@@ -41,22 +34,21 @@ public class BeanConfiguration {
     }
 
 
+
+
+
     @Bean
     public ITechnicianServicePort technicianServicePort(
-    ) {
-        return new TechnicianUseCase();
-    }
+            ITechnicianPersistencePort userPersistencePort,
+            IPasswordEncoderPersistencePort passwordEncoderPort,
+            ITaskFeignClientPort taskFeignClientPort
 
-
-    @Bean
-    public IUserServicePort userServicePort(
-            IUserPersistencePort userPersistencePort,
-            IPasswordEncoderPersistencePort passwordEncoderPort
     ) {
-        return new UserUseCase(
+        return new TechnicianUseCase(
                 userPersistencePort,
                 passwordEncoderPort,
-                technicianDomainService()
+                technicianDomainService(),
+                taskFeignClientPort
         );
     }
 
@@ -68,7 +60,7 @@ public class BeanConfiguration {
 
     @Bean
     public IAuthServicePort authServicePort(
-            IUserPersistencePort userPersistencePort,
+            ITechnicianPersistencePort userPersistencePort,
             IPasswordEncoderPersistencePort passwordEncoderPersistencePort,
             IJwtPersistencePort jwtPersistencePort) {
         return new AuthUseCase(
@@ -83,7 +75,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(IUserPersistencePort userPersistencePort) {
+    public UserDetailsService userDetailsService(ITechnicianPersistencePort userPersistencePort) {
         return username -> {
             var user = userPersistencePort.findByEmail(username);
             if (user == null) {
@@ -99,7 +91,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(IUserPersistencePort userPersistencePort) {
+    public AuthenticationProvider authenticationProvider(ITechnicianPersistencePort userPersistencePort) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService(userPersistencePort));
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -109,5 +101,11 @@ public class BeanConfiguration {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public ITaskFeignClientPort taskFeignClientPort(ITaskFeignClient taskFeignClient,
+                                                      ITaskFeignMapper feignMapper) {
+        return new TaskFeignAdapter(taskFeignClient, feignMapper);
     }
 }

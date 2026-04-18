@@ -1,6 +1,6 @@
 package com.fixit.user.infraestructure.adapters.driven.jpa.adapter;
 
-import com.fixit.user.application.port.out.IUserPersistencePort;
+import com.fixit.user.application.port.out.ITechnicianPersistencePort;
 import com.fixit.user.domain.enums.TechnicianCategory;
 import com.fixit.user.domain.model.Technician;
 import com.fixit.user.domain.model.User;
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class UserJpaAdapter implements IUserPersistencePort {
+public class UserJpaAdapter implements ITechnicianPersistencePort {
 
     private final IUserRepository userRepository;
     private final ITechnicianRepository technicianRepository;
@@ -57,6 +57,13 @@ public class UserJpaAdapter implements IUserPersistencePort {
 
         return mapper.toTechDomain(savedTech);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        technicianRepository.deleteById(id);
+        userRepository.deleteById(id);
+    }
+
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);

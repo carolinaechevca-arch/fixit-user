@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 @RequiredArgsConstructor
@@ -22,6 +24,15 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionResponse(
                 exception.getMessage(), HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now(),
                 HttpStatus.UNAUTHORIZED.value()));
+    }
+    @ExceptionHandler(ExternalServiceException.class)
+    public ResponseEntity<Map<String, Object>> handleExternalServiceException(ExternalServiceException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+        body.put("error", "External Service Communication Error");
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_GATEWAY);
     }
     @ExceptionHandler(TechnicianAlreadyExistsException.class)
     public ResponseEntity<ExceptionResponse> handlerTechnicianAlreadyExistsException(

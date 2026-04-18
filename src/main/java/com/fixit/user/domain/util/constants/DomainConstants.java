@@ -21,4 +21,9 @@ public final class DomainConstants {
     public static final String AUTO_ASSIGN_URGENT_TASKS_MESSAGE = "Assigned %d tasks. %d pending urgent tasks remain";
     public static final String NO_MASTER_TECHNICIANS_AVAILABLE_MESSAGE = "No Master technicians available to assign urgent tasks.";
     public static final String TECHNICIAN_SAME_CATEGORY_MESSAGE = "Technician with ID %d already has category %s.";
+    public static final String FEIGN_INVALID_REQUEST = "Invalid request data sent to Task Service.";
+    public static final String FEIGN_NOT_FOUND = "Resource not found in Task Service.";
+    // Este mensaje parece de un sistema de torneos, asegúrate de que encaje con tu FixIt (Tareas)
+    public static final String FEIGN_TASK_CONFLICT = "Conflict in Task Service operation.";
+    public static final String FEIGN_GENERIC_ERROR = "Generic error in Task Microservice communication.";
 }
