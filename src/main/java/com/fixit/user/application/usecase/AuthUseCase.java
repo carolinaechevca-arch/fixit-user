@@ -32,11 +32,14 @@ public class AuthUseCase implements IAuthServicePort {
             throw new InvalidCredentialsException(INVALID_CREDENTIALS_EXCEPTION_MESSAGE);
         }
 
+        log.info("[USE-CASE] User found for email: {}", auth.email());
+
         if (!passwordEncoder.matches(auth.password(), user.getPassword())) {
             log.warn("[USE-CASE] Invalid password for user: {}", auth.email());
             throw new InvalidCredentialsException(INVALID_CREDENTIALS_EXCEPTION_MESSAGE);
         }
 
+        log.info("[USE-CASE] Credentials validated successfully for userId={}, role={}", user.getId(), user.getRole());
 
         String accessToken = jwtPort.generateAccessToken(user.getEmail(), user.getId(), user.getRole().name());
 

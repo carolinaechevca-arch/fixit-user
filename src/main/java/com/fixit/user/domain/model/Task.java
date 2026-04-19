@@ -18,38 +18,4 @@ public class Task {
     Long technicianId;
     LocalDateTime createdAt;
     LocalDateTime closedAt;
-
-
-    public boolean isUrgent() {
-        return TaskPriority.URGENT.equals(priority);
-    }
-
-    public Task assignTo(Long technicianId) {
-        return this.toBuilder()
-                .technicianId(technicianId)
-                .status(TaskStatus.ASSIGNED)
-                .build();
-    }
-
-    public Task start() {
-        return this.toBuilder()
-                .status(TaskStatus.IN_PROGRESS)
-                .build();
-    }
-
-    public Task complete() {
-        return this.toBuilder()
-                .status(TaskStatus.COMPLETED)
-                .closedAt(LocalDateTime.now())
-                .build();
-    }
-
-    public int getPoints() {
-        return switch (priority) {
-            case HIGH -> 8;
-            case MEDIUM -> 5;
-            case LOW -> 3;
-            case URGENT -> 10;
-        };
-    }
 }

@@ -31,11 +31,16 @@ public class TechnicianUseCase implements ITechnicianServicePort {
 
         boolean emailExists = userPersistencePort.existsByEmail(technician.getUser().getEmail());
         boolean dniExists = userPersistencePort.existsByDni(technician.getUser().getDni());
+        log.debug("[CREATE] Uniqueness validation results - emailExists={}, dniExists={}", emailExists, dniExists);
 
-        technicianDomainService.validateUniqueness(emailExists, dniExists);
+        technicianDomainService.validateUniqueness(technician, emailExists, dniExists);
 
         String encodedPassword = passwordEncoderPort.encodePassword(technician.getUser().getPassword());
+        log.debug("[CREATE] Password encoded successfully for email: {}", technician.getUser().getEmail());
+
         Technician technicianToSave = technicianDomainService.prepareTechnicianForRegistration(technician, encodedPassword);
+        log.debug("[CREATE] Technician prepared for persistence with role={} and status={}",
+                technicianToSave.getUser().getRole(), technicianToSave.getStatus());
 
         Technician saved = userPersistencePort.saveTechnician(technicianToSave);
         log.info("[CREATE] Technician created successfully with ID: {}", saved.getUser().getId());
@@ -45,13 +50,17 @@ public class TechnicianUseCase implements ITechnicianServicePort {
     @Override
     public List<Technician> getAll() {
         log.info("[QUERY] Fetching all technicians");
-        return userPersistencePort.findAllTechnicians();
+        List<Technician> technicians = userPersistencePort.findAllTechnicians();
+        log.info("[QUERY-SUCCESS] Retrieved {} technicians", technicians.size());
+        return technicians;
     }
 
     @Override
     public List<Technician> getTechniciansByCategory(TechnicianCategory category) {
         log.info("[QUERY] Fetching technicians by category: {}", category);
-        return userPersistencePort.findTechniciansByCategory(category);
+        List<Technician> technicians = userPersistencePort.findTechniciansByCategory(category);
+        log.info("[QUERY-SUCCESS] Retrieved {} technicians for category {}", technicians.size(), category);
+        return technicians;
     }
 
     @Override

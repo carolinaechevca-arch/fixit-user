@@ -15,16 +15,6 @@ public class Technician {
     Integer taskCount;
     Integer currentPoints;
 
-    public static Technician createNew(User user, TechnicianCategory category) {
-        return Technician.builder()
-                .user(user)
-                .category(category)
-                .status(TechnicianStatus.AVAILABLE)
-                .taskCount(0)
-                .currentPoints(0)
-                .build();
-    }
-
     public Integer getAvailablePoints() {
         int maxPoints = category.getMaxPoints();
         return (maxPoints == 0) ? 0 : maxPoints - this.currentPoints;
